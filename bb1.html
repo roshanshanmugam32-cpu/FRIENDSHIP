@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ultimate Birthday Surprise 🎂</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#020008;
+    color:white;
+}
+
+button,input{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+#intro{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+      radial-gradient(circle at 20% 20%,rgba(255,0,128,.25),transparent 30%),
+      radial-gradient(circle at 80% 70%,rgba(0,220,255,.2),transparent 30%),
+      radial-gradient(circle at 50% 50%,rgba(150,50,255,.15),transparent 45%),
+      #020008;
+    transition:1s ease;
+}
+
+.introCard{
+    width:min(470px,100%);
+    padding:38px 25px;
+    text-align:center;
+    border-radius:35px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(25px);
+    box-shadow:
+      0 0 80px rgba(255,0,150,.15),
+      0 30px 100px rgba(0,0,0,.7);
+    animation:introIn 1.2s cubic-bezier(.17,.67,.35,1.3);
+}
+
+@keyframes introIn{
+    from{
+        opacity:0;
+        transform:scale(.5) rotate(-8deg);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.giftIcon{
+    font-size:85px;
+    animation:giftBounce 1.5s infinite;
+}
+
+@keyframes giftBounce{
+    0%,100%{
+        transform:translateY(0) rotate(-5deg);
+    }
+    50%{
+        transform:translateY(-18px) rotate(5deg);
+    }
+}
+
+.introCard h1{
+    margin:15px 0 8px;
+    font-size:clamp(30px,8vw,44px);
+    background:
+      linear-gradient(
+        90deg,
+        #ff3b9d,
+        #ffd166,
+        #fff,
+        #4de8ff,
+        #b47cff
+      );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:gradientMove 4s linear infinite;
+}
+
+@keyframes gradientMove{
+    to{
+        background-position:300%;
+    }
+}
+
+.introCard p{
+    color:#ccc;
+    line-height:1.6;
+    margin-bottom:22px;
+}
+
+.inputBox{
+    width:100%;
+    padding:15px;
+    margin:7px 0;
+    border-radius:16px;
+    outline:none;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.08);
+    color:white;
+    font-size:16px;
+}
+
+.inputBox::placeholder{
+    color:#aaa;
+}
+
+.inputBox::-webkit-calendar-picker-indicator{
+    filter:invert(1);
+}
+
+.startBtn{
+    width:100%;
+    margin-top:15px;
+    padding:17px;
+    border:0;
+    border-radius:18px;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    background:
+      linear-gradient(
+        90deg,
+        #ff168f,
+        #8b5cf6,
+        #06b6d4
+      );
+    box-shadow:
+      0 10px 35px rgba(255,0,150,.35);
+    transition:.3s;
+}
+
+.startBtn:hover{
+    transform:translateY(-3px) scale(1.02);
+}
+
+#error{
+    min-height:22px;
+    color:#ff709d;
+    margin-top:8px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+#app{
+    display:none;
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:#03000a;
+}
+
+.scene{
+    position:absolute;
+    inset:0;
+    display:none;
+    overflow:hidden;
+}
+
+.scene.active{
+    display:block;
+    animation:sceneIn 1s ease;
+}
+
+@keyframes sceneIn{
+    from{
+        opacity:0;
+        transform:scale(1.08);
+        filter:blur(12px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+        filter:blur(0);
+    }
+}
+
+
+/* =====================================================
+   BACKGROUND PARTICLES
+===================================================== */
+
+#particles{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+}
+
+.particle{
+    position:absolute;
+    border-radius:50%;
+    background:white;
+    box-shadow:0 0 12px white;
+    animation:particleFloat linear infinite;
+}
+
+@keyframes particleFloat{
+    0%{
+        transform:translateY(110vh) scale(.2);
+        opacity:0;
+    }
+    15%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-20vh) scale(1.2);
+        opacity:0;
+    }
+}
+
+
+/* =====================================================
+   COMMON CONTENT
+===================================================== */
+
+.center{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:25px;
+}
+
+.level{
+    color:#ffd166;
+    font-size:12px;
+    letter-spacing:4px;
+    margin-bottom:12px;
+}
+
+.mainTitle{
+    font-size:clamp(42px,10vw,90px);
+    font-weight:900;
+    line-height:1;
+    background:
+      linear-gradient(
+        90deg,
+        #ff3d9a,
+        #ffd166,
+        #ffffff,
+        #66e6ff,
+        #ad7cff
+      );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:
+      gradientMove 4s linear infinite,
+      titlePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes titlePulse{
+    from{
+        transform:scale(1);
+    }
+    to{
+        transform:scale(1.035);
+    }
+}
+
+.description{
+    max-width:650px;
+    margin-top:20px;
+    font-size:clamp(17px,4vw,23px);
+    line-height:1.7;
+    color:#eee;
+}
+
+.glass{
+    padding:22px;
+    border-radius:25px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.15);
+    backdrop-filter:blur(18px);
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+}
+
+.nextBtn{
+    margin-top:30px;
+    padding:15px 30px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:40px;
+    background:rgba(255,255,255,.1);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    backdrop-filter:blur(10px);
+    transition:.3s;
+}
+
+.nextBtn:hover{
+    transform:scale(1.07);
+    background:rgba(255,255,255,.2);
+    box-shadow:0 0 35px rgba(255,100,200,.35);
+}
+
+
+/* =====================================================
+   LEVEL 1 — GIFT
+===================================================== */
+
+#scene1{
+    background:
+      radial-gradient(circle at 50% 45%,rgba(255,0,130,.28),transparent 35%),
+      linear-gradient(135deg,#12001d,#020008);
+}
+
+.bigGift{
+    position:relative;
+    width:180px;
+    height:160px;
+    margin:25px;
+    animation:giftFloat 2s ease-in-out infinite;
+}
+
+@keyframes giftFloat{
+    50%{
+        transform:translateY(-15px) rotate(2deg);
+    }
+}
+
+.giftBody{
+    position:absolute;
+    left:10px;
+    right:10px;
+    bottom:0;
+    height:110px;
+    border-radius:12px;
+    background:
+      linear-gradient(90deg,#ff267f 45%,#ffd166 45%,#ffd166 55%,#ff267f 55%);
+    box-shadow:0 20px 50px rgba(255,0,130,.35);
+}
+
+.giftLid{
+    position:absolute;
+    left:0;
+    right:0;
+    top:20px;
+    height:35px;
+    border-radius:10px;
+    background:
+      linear-gradient(90deg,#ff267f 43%,#ffd166 43%,#ffd166 57%,#ff267f 57%);
+    z-index:3;
+}
+
+.ribbon{
+    position:absolute;
+    width:70px;
+    height:45px;
+    border:10px solid #ffd166;
+    border-radius:50%;
+    top:-5px;
+    left:55px;
+    z-index:4;
+}
+
+.openGift .giftLid{
+    animation:lidOpen 1s forwards;
+}
+
+@keyframes lidOpen{
+    to{
+        transform:translateY(-85px) rotate(-12deg);
+        opacity:0;
+    }
+}
+
+.openGift .bigGift{
+    animation:giftExplode 1s forwards;
+}
+
+@keyframes giftExplode{
+    60%{
+        transform:scale(1.15);
+    }
+    100%{
+        transform:scale(.1);
+        opacity:0;
+    }
+}
+
+
+/* =====================================================
+   LEVEL 2 — ENVELOPE
+===================================================== */
+
+#scene2{
+    background:
+      radial-gradient(circle at 50% 45%,rgba(255,100,180,.22),transparent 38%),
+      linear-gradient(145deg,#1a001d,#05000c);
+}
+
+.envelope{
+    position:relative;
+    width:min(360px,85vw);
+    height:230px;
+    margin:25px;
+    border-radius:15px;
+    background:#f5d9e8;
+    box-shadow:0 25px 70px rgba(255,70,170,.3);
+    cursor:pointer;
+}
+
+.envelope:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:#d88ab0;
+    clip-path:polygon(0 0,50% 55%,100% 0);
+    z-index:3;
+    transform-origin:top;
+    transition:1s;
+}
+
+.envelope:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(
+        135deg,
+        transparent 50%,
+        #c96b9c 50%
+      );
+    opacity:.35;
+}
+
+.letter{
+    position:absolute;
+    left:10%;
+    right:10%;
+    top:20px;
+    height:190px;
+    background:white;
+    color:#43152d;
+    border-radius:10px;
+    padding:25px;
+    z-index:2;
+    transition:1s;
+}
+
+.envelope.open:before{
+    transform:rotateX(180deg);
+    z-index:1;
+}
+
+.envelope.open .letter{
+    transform:translateY(-150px);
+}
+
+.letter h2{
+    color:#e72b80;
+    margin-bottom:15px;
+}
+
+
+/* =====================================================
+   LEVEL 3 — GALAXY
+===================================================== */
+
+#scene3{
+    background:
+      radial-gradient(circle at center,#24105c 0%,#070016 45%,#000 100%);
+}
+
+.galaxy{
+    position:absolute;
+    width:600px;
+    height:600px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.05);
+    box-shadow:
+      0 0 80px rgba(150,80,255,.25),
+      inset 0 0 100px rgba(0,220,255,.15);
+    animation:galaxyRotate 20s linear infinite;
+}
+
+@keyframes galaxyRotate{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.orbit{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    border:1px dashed rgba(255,255,255,.12);
+}
+
+.planet{
+    position:absolute;
+    top:20px;
+    left:50%;
+    width:30px;
+    height:30px;
+    margin-left:-15px;
+    border-radius:50%;
+    background:#ff66bb;
+    box-shadow:0 0 25px #ff66bb;
+}
+
+.galaxyText{
+    z-index:5;
+    font-size:clamp(35px,8vw,70px);
+    font-weight:900;
+}
+
+
+/* =====================================================
+   LEVEL 4 — CAKE
+===================================================== */
+
+#scene4{
+    background:
+      radial-gradient(circle at center,rgba(255,60,150,.25),transparent 35%),
+      linear-gradient(135deg,#14001d,#030008);
+}
+
+.cakeWrap{
+    position:relative;
+    width:280px;
+    height:270px;
+    margin:20px;
+}
+
+.cakeBase{
+    position:absolute;
+    left:30px;
+    bottom:15px;
+    width:220px;
+    height:100px;
+    border-radius:15px;
+    background:
+      linear-gradient(
+        #ff5b9d,
+        #d91e6b
+      );
+    box-shadow:0 25px 60px rgba(255,0,120,.4);
+}
+
+.cakeCream{
+    position:absolute;
+    left:30px;
+    bottom:100px;
+    width:220px;
+    height:35px;
+    border-radius:50%;
+    background:#fff;
+}
+
+.candle4{
+    position:absolute;
+    bottom:135px;
+    width:16px;
+    height:65px;
+    border-radius:7px;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        white 0 7px,
+        #67e8ff 7px 14px
+      );
+}
+
+.candle4:nth-child(1){left:70px}
+.candle4:nth-child(2){left:110px}
+.candle4:nth-child(3){left:150px}
+.candle4:nth-child(4){left:190px}
+
+.flame4{
+    position:absolute;
+    bottom:190px;
+    width:19px;
+    height:29px;
+    border-radius:50% 50% 50% 10%;
+    background:#ffd166;
+    transform:rotate(45deg);
+    box-shadow:0 0 30px #ff9f00;
+    animation:flameMove .5s infinite alternate;
+}
+
+.flame4:nth-of-type(5){left:69px}
+.flame4:nth-of-type(6){left:109px}
+.flame4:nth-of-type(7){left:149px}
+.flame4:nth-of-type(8){left:189px}
+
+@keyframes flameMove{
+    to{
+        transform:rotate(55deg) scale(1.15);
+    }
+}
+
+
+/* =====================================================
+   LEVEL 5 — FINAL
+===================================================== */
+
+#scene5{
+    background:
+      radial-gradient(circle at center,rgba(255,0,120,.28),transparent 30%),
+      radial-gradient(circle at 20% 80%,rgba(0,220,255,.15),transparent 30%),
+      linear-gradient(135deg,#100017,#020008);
+}
+
+.finalCard{
+    width:min(700px,92%);
+    padding:40px 25px;
+    border-radius:35px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+    backdrop-filter:blur(25px);
+    box-shadow:
+      0 0 100px rgba(255,0,150,.2),
+      0 30px 100px rgba(0,0,0,.6);
+    animation:finalCard 1.5s cubic-bezier(.17,.67,.35,1.3);
+}
+
+@keyframes finalCard{
+    from{
+        opacity:0;
+        transform:scale(.2) rotate(-10deg);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.finalHeart{
+    font-size:75px;
+    animation:heartBeat 1s infinite;
+}
+
+@keyframes heartBeat{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.25)}
+}
+
+.finalTitle{
+    margin:15px 0;
+    font-size:clamp(38px,8vw,75px);
+    font-weight:900;
+    background:
+      linear-gradient(
+        90deg,
+        #ff3c9d,
+        #ffd166,
+        #fff,
+        #67e8ff
+      );
+    -webkit-background-clip:text;
+    color:transparent;
+    background-size:250%;
+    animation:gradientMove 3s linear infinite;
+}
+
+.finalMessage{
+    font-size:clamp(17px,4vw,24px);
+    line-height:1.8;
+    color:#eee;
+}
+
+.replay{
+    margin-top:25px;
+    padding:14px 25px;
+    border:0;
+    border-radius:30px;
+    background:#fff;
+    color:#140018;
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   BALLOONS
+===================================================== */
+
+.balloon{
+    position:absolute;
+    width:60px;
+    height:75px;
+    border-radius:50%;
+    z-index:5;
+    animation:balloonFloat 6s ease-in-out infinite;
+}
+
+.balloon:after{
+    content:"";
+    position:absolute;
+    top:73px;
+    left:30px;
+    width:1px;
+    height:170px;
+    background:rgba(255,255,255,.3);
+}
+
+.balloon:before{
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    left:24px;
+    width:12px;
+    height:12px;
+    background:inherit;
+    transform:rotate(45deg);
+}
+
+.balloon.a{
+    left:4%;
+    top:20%;
+    background:#ff3b81;
+}
+
+.balloon.b{
+    right:5%;
+    top:22%;
+    background:#31d7ff;
+    animation-delay:1s;
+}
+
+.balloon.c{
+    left:8%;
+    bottom:15%;
+    background:#ffd166;
+    animation-delay:2s;
+}
+
+.balloon.d{
+    right:8%;
+    bottom:18%;
+    background:#a78bfa;
+    animation-delay:3s;
+}
+
+@keyframes balloonFloat{
+    0%,100%{
+        transform:translateY(0) rotate(-5deg);
+    }
+    50%{
+        transform:translateY(-35px) rotate(6deg);
+    }
+}
+
+
+/* =====================================================
+   PETALS / BUTTERFLIES
+===================================================== */
+
+.petal{
+    position:fixed;
+    top:-30px;
+    z-index:40;
+    pointer-events:none;
+    animation:petalFall linear forwards;
+}
+
+@keyframes petalFall{
+    to{
+        transform:
+          translateY(110vh)
+          rotate(720deg);
+        opacity:0;
+    }
+}
+
+.butterfly{
+    position:fixed;
+    font-size:25px;
+    z-index:45;
+    pointer-events:none;
+    animation:butterflyMove 8s linear forwards;
+}
+
+@keyframes butterflyMove{
+    0%{
+        left:-10%;
+        transform:translateY(0) rotate(0);
+    }
+    50%{
+        transform:translateY(-80px) rotate(15deg);
+    }
+    100%{
+        left:110%;
+        transform:translateY(50px) rotate(-15deg);
+    }
+}
+
+
+/* =====================================================
+   CONFETTI
+===================================================== */
+
+.confetti{
+    position:fixed;
+    top:-20px;
+    width:9px;
+    height:16px;
+    z-index:1000;
+    pointer-events:none;
+    animation:confettiFall linear forwards;
+}
+
+@keyframes confettiFall{
+    to{
+        transform:
+          translateY(110vh)
+          rotate(900deg);
+        opacity:0;
+    }
+}
+
+
+/* =====================================================
+   FIREWORK
+===================================================== */
+
+.firework{
+    position:fixed;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    z-index:900;
+    box-shadow:
+      0 -80px 0 2px #ff3b9d,
+      55px -55px 0 2px #ffd166,
+      80px 0 0 2px #67e8ff,
+      55px 55px 0 2px #a78bfa,
+      0 80px 0 2px #ff3b9d,
+      -55px 55px 0 2px #ffd166,
+      -80px 0 0 2px #67e8ff,
+      -55px -55px 0 2px #a78bfa;
+    animation:fireworkBoom 1.2s ease-out forwards;
+}
+
+@keyframes fireworkBoom{
+    from{
+        transform:scale(.1);
+        opacity:1;
+    }
+    to{
+        transform:scale(1);
+        opacity:0;
+    }
+}
+
+
+/* =====================================================
+   FLOATING HEART
+===================================================== */
+
+.floatHeart{
+    position:fixed;
+    bottom:-40px;
+    z-index:800;
+    pointer-events:none;
+    animation:heartUp 5s linear forwards;
+}
+
+@keyframes heartUp{
+    0%{
+        opacity:0;
+        transform:translateY(0) scale(.4);
+    }
+    15%{
+        opacity:1;
+    }
+    100%{
+        opacity:0;
+        transform:
+          translateY(-110vh)
+          rotate(25deg)
+          scale(1.5);
+    }
+}
+
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+.controls{
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    z-index:5000;
+    display:flex;
+    gap:8px;
+}
+
+.controlBtn{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.1);
+    color:white;
+    backdrop-filter:blur(10px);
+    font-size:18px;
+}
+
+#photoInput{
+    display:none;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:600px){
+
+    .balloon{
+        transform:scale(.7);
+    }
+
+    .bigGift{
+        transform:scale(.85);
+    }
+
+    .galaxy{
+        width:360px;
+        height:360px;
+    }
+
+    .envelope{
+        transform:scale(.85);
+    }
+
+    .finalCard{
+        padding:30px 18px;
+    }
+
+    .description{
+        font-size:17px;
+    }
+
+}
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     INTRO SCREEN
+===================================================== -->
+
+<section id="intro">
+
+<div class="introCard">
+
+    <div class="giftIcon">🎁</div>
+
+    <h1>ULTIMATE BIRTHDAY</h1>
+
+    <p>
+        A normal birthday wish isn't enough...<br>
+        There are <b>5 surprises</b> waiting for you! ✨
+    </p>
+
+    <input
+        id="name"
+        class="inputBox"
+        type="text"
+        placeholder="Enter First Name"
+        maxlength="30"
+    >
+
+    <input
+        id="dob"
+        class="inputBox"
+        type="date"
+    >
+
+    <button
+        class="startBtn"
+        onclick="startBirthday()"
+    >
+        🎁 UNLOCK THE SURPRISE
+    </button>
+
+    <div id="error"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<section id="app">
+
+<div id="particles"></div>
+
+
+<!-- =====================================================
+     LEVEL 1
+===================================================== -->
+
+<div id="scene1" class="scene active">
+
+    <div class="balloon a"></div>
+    <div class="balloon b"></div>
+    <div class="balloon c"></div>
+    <div class="balloon d"></div>
+
+    <div class="center">
+
+        <div class="level">
+            SURPRISE 01 / 05
+        </div>
+
+        <div class="mainTitle">
+            HEY <span id="name1"></span>! 💖
+        </div>
+
+        <p class="description">
+            Today isn't just another day...
+            <br>
+            Something special has been prepared
+            especially for you. ✨
+        </p>
+
+        <div class="bigGift" id="gift">
+
+            <div class="ribbon"></div>
+
+            <div class="giftLid"></div>
+
+            <div class="giftBody"></div>
+
+        </div>
+
+        <button
+            class="nextBtn"
+            onclick="openGift()"
+        >
+            🎁 OPEN THE GIFT
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LEVEL 2
+===================================================== -->
+
+<div id="scene2" class="scene">
+
+    <div class="center">
+
+        <div class="level">
+            SURPRISE 02 / 05
+        </div>
+
+        <div class="mainTitle">
+            A SECRET MESSAGE 💌
+        </div>
+
+        <p class="description">
+            Someone left a little message for you...
+            <br>
+            Tap the envelope to discover it.
+        </p>
+
+        <div
+            class="envelope"
+            id="envelope"
+            onclick="openEnvelope()"
+        >
+
+            <div class="letter">
+
+                <h2>For <span id="name2"></span> ❤️</h2>
+
+                <p>
+                    You deserve all the happiness,
+                    laughter, love and beautiful moments
+                    life can give. ✨
+                </p>
+
+                <br>
+
+                <b>
+                    Your next surprise is waiting...
+                </b>
+
+            </div>
+
+        </div>
+
+        <button
+            class="nextBtn"
+            onclick="goScene(3)"
+        >
+            ✨ CONTINUE THE JOURNEY
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LEVEL 3
+===================================================== -->
+
+<div id="scene3" class="scene">
+
+    <div class="galaxy">
+
+        <div class="orbit">
+            <div class="planet"></div>
+        </div>
+
+    </div>
+
+    <div class="center">
+
+        <div class="level">
+            SURPRISE 03 / 05
+        </div>
+
+        <div class="galaxyText">
+            YOU ARE A STAR ⭐
+        </div>
+
+        <p class="description">
+            In this huge universe,
+            there is only one
+            <b id="name3"></b>.
+            <br>
+            And that's what makes you special. 🌌
+        </p>
+
+        <button
+            class="nextBtn"
+            onclick="goScene(4)"
+        >
+            🌟 SHOW ME MORE
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LEVEL 4
+===================================================== -->
+
+<div id="scene4" class="scene">
+
+    <div class="center">
+
+        <div class="level">
+            SURPRISE 04 / 05
+        </div>
+
+        <div class="mainTitle">
+            MAKE A WISH 🎂
+        </div>
+
+        <p class="description">
+            Close your eyes...
+            <br>
+            Make your biggest wish...
+            <br>
+            Then blow the candles! ✨
+        </p>
+
+        <div class="cakeWrap">
+
+            <div class="candle4"></div>
+            <div class="candle4"></div>
+            <div class="candle4"></div>
+            <div class="candle4"></div>
+
+            <div class="flame4"></div>
+            <div class="flame4"></div>
+            <div class="flame4"></div>
+            <div class="flame4"></div>
+
+            <div class="cakeCream"></div>
+            <div class="cakeBase"></div>
+
+        </div>
+
+        <button
+            class="nextBtn"
+            onclick="blowCandles()"
+        >
+            💨 BLOW THE CANDLES
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LEVEL 5 FINAL
+===================================================== -->
+
+<div id="scene5" class="scene">
+
+    <div class="center">
+
+        <div class="finalCard">
+
+            <div class="finalHeart">
+                💖
+            </div>
+
+            <div class="level">
+                FINAL SURPRISE • 05 / 05
+            </div>
+
+            <div class="finalTitle">
+                HAPPY BIRTHDAY
+            </div>
+
+            <h2 id="finalName">
+                YOU
+            </h2>
+
+            <p class="finalMessage">
+
+                🎉 Today is your day! 🎉
+
+                <br><br>
+
+                May every dream you carry
+                in your heart find its way
+                into reality.
+
+                <br><br>
+
+                May your smile become brighter,
+                your memories become sweeter,
+                and your future become
+                more beautiful every single day. ✨
+
+                <br><br>
+
+                ❤️ Stay happy.<br>
+                ❤️ Stay amazing.<br>
+                ❤️ Keep shining.
+
+                <br><br>
+
+                <b>
+                    Happy Birthday! 🎂🎈🎉
+                </b>
+
+            </p>
+
+            <button
+                class="replay"
+                onclick="location.reload()"
+            >
+                🔄 EXPERIENCE AGAIN
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONTROLS
+===================================================== -->
+
+<div class="controls">
+
+    <button
+        class="controlBtn"
+        onclick="startConfetti(70)"
+        title="Confetti"
+    >
+        🎉
+    </button>
+
+    <button
+        class="controlBtn"
+        onclick="fireworks()"
+        title="Fireworks"
+    >
+        🎆
+    </button>
+
+    <button
+        class="controlBtn"
+        onclick="document.getElementById('photoInput').click()"
+        title="Photo"
+    >
+        📸
+    </button>
+
+</div>
+
+<input
+    id="photoInput"
+    type="file"
+    accept="image/*"
+    onchange="loadPhoto(event)"
+>
+
+
+<script>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+let userName="";
+let userAge=0;
+let currentScene=1;
+
+
+/* =====================================================
+   START
+===================================================== */
+
+function startBirthday(){
+
+    userName=
+        document.getElementById("name")
+        .value.trim();
+
+    const dob=
+        document.getElementById("dob")
+        .value;
+
+    const error=
+        document.getElementById("error");
+
+    if(!userName){
+        error.textContent=
+        "Please enter the first name ❤️";
+        return;
+    }
+
+    if(!dob){
+        error.textContent=
+        "Please enter date of birth 🎂";
+        return;
+    }
+
+    const birth=
+        new Date(dob);
+
+    const today=
+        new Date();
+
+    if(birth>today){
+        error.textContent=
+        "DOB cannot be in the future.";
+        return;
+    }
+
+    userAge=
+        today.getFullYear()-
+        birth.getFullYear();
+
+    const month=
+        today.getMonth()-
+        birth.getMonth();
+
+    if(
+        month<0 ||
+        (
+          month===0 &&
+          today.getDate()<birth.getDate()
+        )
+    ){
+        userAge--;
+    }
+
+    document.getElementById("name1")
+        .textContent=userName;
+
+    document.getElementById("name2")
+        .textContent=userName;
+
+    document.getElementById("name3")
+        .textContent=userName;
+
+    document.getElementById("finalName")
+        .textContent=userName+" ❤️";
+
+    document.getElementById("intro")
+        .style.opacity="0";
+
+    setTimeout(()=>{
+
+        document.getElementById("intro")
+            .style.display="none";
+
+        document.getElementById("app")
+            .style.display="block";
+
+        createParticles();
+
+        startConfetti(120);
+
+        fireworks();
+
+        setInterval(()=>{
+            hearts();
+        },1200);
+
+    },900);
+}
+
+
+/* =====================================================
+   SCENE NAVIGATION
+===================================================== */
+
+function goScene(number){
+
+    document
+      .querySelectorAll(".scene")
+      .forEach(scene=>{
+          scene.classList.remove("active");
+      });
+
+    document
+      .getElementById("scene"+number)
+      .classList.add("active");
+
+    currentScene=number;
+
+    startConfetti(60);
+
+    fireworks();
+
+    petals();
+
+    butterflies();
+}
+
+
+/* =====================================================
+   LEVEL 1 GIFT
+===================================================== */
+
+function openGift(){
+
+    const gift=
+        document.getElementById("gift");
+
+    gift.classList.add("openGift");
+
+    startConfetti(100);
+
+    fireworks();
+
+    setTimeout(()=>{
+        goScene(2);
+    },1800);
+}
+
+
+/* =====================================================
+   LEVEL 2 ENVELOPE
+===================================================== */
+
+function openEnvelope(){
+
+    const env=
+        document.getElementById("envelope");
+
+    env.classList.add("open");
+
+    hearts();
+
+    setTimeout(()=>{
+        startConfetti(50);
+    },700);
+}
+
+
+/* =====================================================
+   LEVEL 4 CANDLES
+===================================================== */
+
+function blowCandles(){
+
+    document
+      .querySelectorAll(".flame4")
+      .forEach(flame=>{
+          flame.style.animation="none";
+          flame.style.opacity="0";
+          flame.style.transform=
+              "scale(.1)";
+      });
+
+    startConfetti(150);
+
+    fireworks();
+
+    petals();
+
+    butterflies();
+
+    setTimeout(()=>{
+        goScene(5);
+        startConfetti(200);
+        fireworks();
+    },1500);
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+function createParticles(){
+
+    const container=
+        document.getElementById("particles");
+
+    for(let i=0;i<100;i++){
+
+        const p=
+            document.createElement("div");
+
+        p.className="particle";
+
+        const size=
+            1+Math.random()*4;
+
+        p.style.width=size+"px";
+        p.style.height=size+"px";
+
+        p.style.left=
+            Math.random()*100+"%";
+
+        p.style.animationDuration=
+            (5+Math.random()*10)+"s";
+
+        p.style.animationDelay=
+            Math.random()*8+"s";
+
+        container.appendChild(p);
+    }
+}
+
+
+/* =====================================================
+   CONFETTI
+===================================================== */
+
+function startConfetti(amount=80){
+
+    for(let i=0;i<amount;i++){
+
+        const c=
+            document.createElement("div");
+
+        c.className="confetti";
+
+        c.style.left=
+            Math.random()*100+"vw";
+
+        c.style.background=
+            `hsl(${Math.random()*360},100%,65%)`;
+
+        c.style.animationDuration=
+            (2+Math.random()*4)+"s";
+
+        c.style.animationDelay=
+            Math.random()*1.5+"s";
+
+        c.style.transform=
+            `rotate(${Math.random()*360}deg)`;
+
+        document.body.appendChild(c);
+
+        setTimeout(()=>{
+            c.remove();
+        },7000);
+    }
+}
+
+
+/* =====================================================
+   FIREWORKS
+===================================================== */
+
+function fireworks(){
+
+    for(let i=0;i<10;i++){
+
+        setTimeout(()=>{
+
+            const f=
+                document.createElement("div");
+
+            f.className="firework";
+
+            f.style.left=
+                (15+Math.random()*70)+"vw";
+
+            f.style.top=
+                (10+Math.random()*55)+"vh";
+
+            document.body.appendChild(f);
+
+            setTimeout(()=>{
+                f.remove();
+            },1300);
+
+        },i*180);
+    }
+}
+
+
+/* =====================================================
+   HEARTS
+===================================================== */
+
+function hearts(){
+
+    const h=
+        document.createElement("div");
+
+    h.className="floatHeart";
+
+    const icons=[
+        "❤️",
+        "💖",
+        "💕",
+        "💗",
+        "💓",
+        "💘",
+        "💝",
+        "✨"
+    ];
+
+    h.textContent=
+        icons[
+          Math.floor(
+            Math.random()*icons.length
+          )
+        ];
+
+    h.style.left=
+        Math.random()*100+"vw";
+
+    h.style.fontSize=
+        (18+Math.random()*30)+"px";
+
+    h.style.animationDuration=
+        (3+Math.random()*4)+"s";
+
+    document.body.appendChild(h);
+
+    setTimeout(()=>{
+        h.remove();
+    },7000);
+}
+
+
+/* =====================================================
+   PETALS
+===================================================== */
+
+function petals(){
+
+    const icons=[
+        "🌸",
+        "🌹",
+        "🌺",
+        "✨",
+        "💮"
+    ];
+
+    for(let i=0;i<25;i++){
+
+        const p=
+            document.createElement("div");
+
+        p.className="petal";
+
+        p.textContent=
+            icons[
+              Math.floor(
+                Math.random()*icons.length
+              )
+            ];
+
+        p.style.left=
+            Math.random()*100+"vw";
+
+        p.style.fontSize=
+            (14+Math.random()*18)+"px";
+
+        p.style.animationDuration=
+            (4+Math.random()*5)+"s";
+
+        p.style.animationDelay=
+            Math.random()*2+"s";
+
+        document.body.appendChild(p);
+
+        setTimeout(()=>{
+            p.remove();
+        },8000);
+    }
+}
+
+
+/* =====================================================
+   BUTTERFLIES
+===================================================== */
+
+function butterflies(){
+
+    for(let i=0;i<5;i++){
+
+        const b=
+            document.createElement("div");
+
+        b.className="butterfly";
+
+        b.textContent="🦋";
+
+        b.style.top=
+            (15+Math.random()*70)+"vh";
+
+        b.style.animationDuration=
+            (6+Math.random()*4)+"s";
+
+        b.style.animationDelay=
+            i*.7+"s";
+
+        document.body.appendChild(b);
+
+        setTimeout(()=>{
+            b.remove();
+        },11000);
+    }
+}
+
+
+/* =====================================================
+   PHOTO
+===================================================== */
+
+function loadPhoto(event){
+
+    const file=
+        event.target.files[0];
+
+    if(!file)return;
+
+    const reader=
+        new FileReader();
+
+    reader.onload=function(e){
+
+        const url=e.target.result;
+
+        document.body.style.backgroundImage=
+            `url("${url}")`;
+
+        alert(
+          "📸 Photo selected! You can customize the final page further with this photo."
+        );
+    };
+
+    reader.readAsDataURL(file);
+}
+
+</script>
+
+</body>
+</html>
